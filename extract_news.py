@@ -8,18 +8,19 @@ def hello(name="World"):
   return "Hello %s!" % name
 
 def get_news(keyword, news_count=10):
-    #keyword = 'anies'
-    response = requests.get(f'https://www.google.com/search?q={keyword}&tbm=nws&start=10', headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:121.0) Gecko/20100101 Firefox/121.0'})
-    response.raise_for_status()
-    soup = bs4.BeautifulSoup(response.text, 'html.parser')
-    linkElems = soup.select('a.WlydOe')
     links = []
-    for linkElem in linkElems:
-        titleElem = linkElem.select_one('div.n0jPhd')
-        links.append({
-            'title': titleElem.getText(),
-            'href': linkElem.get('href')
-        })
+    for i in range(0, news_count, 10):
+        response = requests.get(f'https://www.google.com/search?q={keyword}&tbm=nws&start={i}', headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:121.0) Gecko/20100101 Firefox/121.0'})
+        response.raise_for_status()
+        soup = bs4.BeautifulSoup(response.text, 'html.parser')
+        linkElems = soup.select('a.WlydOe')
+        
+        for linkElem in linkElems:
+            titleElem = linkElem.select_one('div.n0jPhd')
+            links.append({
+                'title': titleElem.getText(),
+                'href': linkElem.get('href')
+            })
     #print(json.dumps(links, indent=2))
 
     for link in links:
